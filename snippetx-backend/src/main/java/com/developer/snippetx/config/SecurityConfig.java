@@ -1,9 +1,5 @@
 package com.developer.snippetx.config;
 
-import com.developer.snippetx.common.Result;
-import com.developer.snippetx.common.UserContext;
-import com.developer.snippetx.exception.BusinessException;
-import com.developer.snippetx.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
