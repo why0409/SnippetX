@@ -16,6 +16,16 @@ spring:
     port: ${MAIL_PORT:465}
     username: ${MAIL_USER}
     password: ${MAIL_PASS}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+          socketFactory:
+            port: 465
+            class: jakarta.net.ssl.SSLSocketFactory
+            fallback: false
 
 snippetx:
   jwt:
