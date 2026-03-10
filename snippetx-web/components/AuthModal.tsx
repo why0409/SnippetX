@@ -79,12 +79,19 @@ export default function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps
         return;
       } else {
         const res = await api.post("/user/login", { username: formData.username, password: formData.password });
-        localStorage.setItem("auth_token", res.data.data);
+        if (res.data.code === 200) {
+          localStorage.setItem("auth_token", res.data.data);
+        } else {
+          setError(res.data.message || "登录失败");
+          setLoading(false);
+          return;
+        }
       }
       onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.message || "操作失败");
+      console.error("Auth error:", err);
+      setError(err.response?.data?.message || "网络请求失败，请稍后再试");
     } finally {
       setLoading(false);
     }

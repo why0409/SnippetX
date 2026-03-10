@@ -28,12 +28,22 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+...
+    @Bean
+    public UserDetailsService userDetailsService() {
+        // 提供一个空的 UserDetailsService，防止 Spring Security 生成默认密码
+        return new InMemoryUserDetailsManager();
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // 显式配置 CORS
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 无状态
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/user/login", "/user/register", "/user/send-code", "/user/reset-password", "/snippet/list", "/snippet/community").permitAll()
                 .anyRequest().authenticated()
