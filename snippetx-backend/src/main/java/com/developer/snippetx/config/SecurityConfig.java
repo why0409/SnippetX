@@ -35,7 +35,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource())) // 显式配置 CORS
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/user/login", "/user/register", "/user/send-code", "/user/reset-password", "/snippet/list").permitAll()
+                .requestMatchers("/user/login", "/user/register", "/user/send-code", "/user/reset-password", "/snippet/list", "/snippet/community").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

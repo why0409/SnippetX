@@ -62,9 +62,46 @@ public class SnippetController {
     }
 
     /**
-     * 获取代码片段列表
-     * - 已登录: 返回当前用户的所有片段
-     * - 未登录: 返回所有公开(isPublic=true)的片段
+     * 获取个人片段列表 (需登录)
+     */
+    @GetMapping("/my")
+    public Result<List<Snippet>> my(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String keyword) {
+        Long userId = UserContext.getUserId();
+        if (userId == null) {
+            throw new BusinessException("请先登录");
+        }
+        return Result.success(snippetService.lambdaQuery()
+                .eq(Snippet::getUserId, userId)
+                .eq(category != null, Snippet::getCategory, category)
+                .and(keyword != null, w -> 
+                    w.like(Snippet::getTitle, keyword).or().like(Snippet::getDescription, keyword)
+                )
+                .orderByDesc(Snippet::getIsPinned)
+                .orderByDesc(Snippet::getCreatedAt)
+                .list());
+    }
+
+    /**
+     * 获取社区公开片段 (无需登录)
+     */
+    @GetMapping("/community")
+    public Result<List<Snippet>> community(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String language) {
+        return Result.success(snippetService.lambdaQuery()
+                .eq(Snippet::getIsPublic, true)
+                .eq(language != null, Snippet::getLanguage, language)
+                .and(keyword != null, w -> 
+                    w.like(Snippet::getTitle, keyword).or().like(Snippet::getDescription, keyword)
+                )
+                .orderByDesc(Snippet::getCreatedAt)
+                .list());
+    }
+
+    /**
+     * 获取代码片段列表 (兼容旧版逻辑)
      */
     @GetMapping("/list")
     public Result<List<Snippet>> list(
@@ -72,25 +109,9 @@ public class SnippetController {
             @RequestParam(required = false) String keyword) {
         Long userId = UserContext.getUserId();
         if (userId != null) {
-            // 已登录: 查询当前用户的
-            return Result.success(snippetService.lambdaQuery()
-                    .eq(Snippet::getUserId, userId)
-                    .eq(category != null, Snippet::getCategory, category)
-                    .and(keyword != null, w -> 
-                        w.like(Snippet::getTitle, keyword).or().like(Snippet::getDescription, keyword)
-                    )
-                    .orderByDesc(Snippet::getIsPinned)
-                    .orderByDesc(Snippet::getCreatedAt)
-                    .list());
+            return my(category, keyword);
         } else {
-            // 未登录: 仅查询公开的
-            return Result.success(snippetService.lambdaQuery()
-                    .eq(Snippet::getIsPublic, true)
-                    .and(keyword != null, w -> 
-                        w.like(Snippet::getTitle, keyword).or().like(Snippet::getDescription, keyword)
-                    )
-                    .orderByDesc(Snippet::getCreatedAt)
-                    .list());
+            return community(keyword, null);
         }
     }
 
