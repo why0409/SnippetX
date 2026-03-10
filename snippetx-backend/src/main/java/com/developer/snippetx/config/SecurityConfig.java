@@ -45,7 +45,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Collections.singletonList("*")); // 允许所有来源
+        // 生产环境：请将此处改为你的 Vercel 真实域名，例如 https://snippetx.vercel.app
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://your-app-name.vercel.app")); 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setAllowCredentials(true);

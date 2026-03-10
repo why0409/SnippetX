@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:9999',
+  // 生产环境通过环境变量 NEXT_PUBLIC_API_URL 注入，例如 https://api.yourdomain.com
+  // 本地开发默认使用 http://localhost:9999
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9999',
 });
 
 // 请求拦截器注入 Token

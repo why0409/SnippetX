@@ -1,68 +1,24 @@
 server:
-  port: 9999 # 服务启动端口
+  port: 9999
 
 spring:
   application:
     name: snippetx-backend
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    # 本地 MySQL 8.0 连接 URL，allowPublicKeyRetrieval=true 解决 8.0 常见的密钥获取报错
-    url: jdbc:mysql://127.0.0.1:3306/snippetx?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
-    username: root
-    password: 123456 # 请替换为你本地数据库的真实密码
-    
-    # 默认使用 HikariCP 连接池
-    hikari:
-      minimum-idle: 5
-      maximum-pool-size: 20
-      idle-timeout: 30000
-      pool-name: SnippetX-HikariCP
-
-  data:
-    redis:
-      host: 127.0.0.1
-      port: 6379
-      database: 0
-      timeout: 5000ms
-
-  mail:
-    host: smtpdm.aliyun.com
-    port: 465
-    # 你的阿里云发信地址@mail.domain.com
-    username: snippetx@ysoserious.ggff.net
-    # 你的发信地址专用密码 # 请替换
-    password: eTm683zttPrV9AP
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
-          ssl:
-            enable: true
-          # 针对阿里云的特殊优化
-          socketFactory:
-            port: 465
-            class: javax.net.ssl.SSLSocketFactory
-            fallback: false
+  profiles:
+    active: dev # 默认开发环境
+  main:
+    banner-mode: "off"
 
 # MyBatis-Plus 核心配置
 mybatis-plus:
-  # XML 映射文件存放位置
   mapper-locations: classpath:mapper/*.xml
-  # 实体类所在包，给 Mapper 自动起别名
   type-aliases-package: com.developer.snippetx.entity
   configuration:
-    # 开启驼峰命名自动映射 (如数据库 user_id 自动映射到实体类 userId)
     map-underscore-to-camel-case: true
-    # 开发环境下开启 SQL 打印，方便在控制台调试
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
-      # 全局主键策略：对应我们建表时使用的 AUTO_INCREMENT
       id-type: auto
-      # 逻辑删除全局配置 (可选配置，为后续扩展留个口子)
       logic-delete-field: deleted
       logic-delete-value: 1
       logic-not-delete-value: 0
@@ -71,4 +27,4 @@ mybatis-plus:
 logging:
   level:
     root: INFO
-    com.developer.snippetx: DEBUG # 打印自己包下的 Debug 级日志
+    com.developer.snippetx: DEBUG

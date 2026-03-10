@@ -1,0 +1,21 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/snippetx?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+  mail:
+    host: smtpdm.aliyun.com
+    port: 465
+    username: snippetx@ysoserious.ggff.net
+    password: eTm683zttPrV9AP
+
+snippetx:
+  jwt:
+    secret: localDevelopmentSecretKeyOnlyForTesting
