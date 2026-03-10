@@ -45,8 +45,12 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // 生产环境：请将此处改为你的 Vercel 真实域名，例如 https://snippetx.vercel.app
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "https://your-app-name.vercel.app")); 
+        // 允许本地开发环境、ysoserious.ggff.net 域名以及所有 Vercel 预览域名
+        configuration.setAllowedOriginPatterns(Arrays.asList(
+            "http://localhost:3000",
+            "https://ysoserious.ggff.net*",
+            "https://*.vercel.app"
+        )); 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
         configuration.setAllowCredentials(true);

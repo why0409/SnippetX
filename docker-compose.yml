@@ -45,6 +45,21 @@ services:
     networks:
       - snippetx-net
 
+  # Nginx 反向代理 (HTTPS 9443)
+  nginx:
+    image: nginx:alpine
+    container_name: snippetx-nginx
+    ports:
+      - "9443:9443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+      - ./nginx/logs:/var/log/nginx
+    depends_on:
+      - snippetx-api
+    networks:
+      - snippetx-net
+
 networks:
   snippetx-net:
     driver: bridge
