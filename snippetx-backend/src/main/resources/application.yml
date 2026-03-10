@@ -18,6 +18,35 @@ spring:
       idle-timeout: 30000
       pool-name: SnippetX-HikariCP
 
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 0
+      timeout: 5000ms
+
+  mail:
+    host: smtpdm.aliyun.com
+    port: 465
+    # 你的阿里云发信地址@mail.domain.com
+    username: snippetx@ysoserious.ggff.net
+    # 你的发信地址专用密码 # 请替换
+    password: eTm683zttPrV9AP
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            enable: true
+          # 针对阿里云的特殊优化
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
+            fallback: false
+
 # MyBatis-Plus 核心配置
 mybatis-plus:
   # XML 映射文件存放位置

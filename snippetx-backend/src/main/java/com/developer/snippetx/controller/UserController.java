@@ -24,12 +24,40 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final com.developer.snippetx.service.EmailService emailService;
+
+    /**
+     * 发送验证码
+     */
+    @PostMapping("/send-code")
+    public Result<String> sendCode(@RequestParam String email) {
+        emailService.sendVerificationCode(email);
+        return Result.success("验证码已发送");
+    }
+
+    /**
+     * 重置密码
+     */
+    @PostMapping("/reset-password")
+    public Result<String> resetPassword(@RequestParam String email, @RequestParam String code, @RequestParam String newPassword) {
+        if (!emailService.verifyCode(email, code)) {
+            throw new com.developer.snippetx.exception.BusinessException("验证码错误或已过期");
+        }
+        userService.lambdaUpdate()
+                .eq(User::getEmail, email)
+                .set(User::getPasswordHash, new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder().encode(newPassword))
+                .update();
+        return Result.success("密码重置成功");
+    }
 
     /**
      * 注册
      */
     @PostMapping("/register")
-    public Result<String> register(@RequestBody UserRegisterDTO registerDTO) {
+    public Result<String> register(@RequestBody UserRegisterDTO registerDTO, @RequestParam String code) {
+        if (!emailService.verifyCode(registerDTO.getEmail(), code)) {
+            throw new com.developer.snippetx.exception.BusinessException("验证码错误");
+        }
         userService.register(registerDTO);
         return Result.success("注册成功");
     }

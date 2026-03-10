@@ -43,10 +43,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public String login(UserLoginDTO loginDTO) {
-        // 1. 查询用户
-        User user = getOne(new LambdaQueryWrapper<User>().eq(User::getUsername, loginDTO.getUsername()));
+        // 1. 查询用户 (支持用户名或邮箱)
+        User user = getOne(new LambdaQueryWrapper<User>()
+                .eq(User::getUsername, loginDTO.getUsername())
+                .or()
+                .eq(User::getEmail, loginDTO.getUsername()));
+        
         if (user == null || !passwordEncoder.matches(loginDTO.getPassword(), user.getPasswordHash())) {
-            throw new BusinessException("用户名或密码错误");
+            throw new BusinessException("用户名、邮箱或密码错误");
         }
 
         // 2. 生成 Token
