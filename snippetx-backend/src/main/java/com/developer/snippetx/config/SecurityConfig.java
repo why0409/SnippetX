@@ -45,14 +45,14 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // 允许本地开发环境、ysoserious.ggff.net 域名以及所有 Vercel 预览域名
+        // 允许开发环境、所有 vercel 子域
         configuration.setAllowedOriginPatterns(Arrays.asList(
             "http://localhost:3000",
-            "https://ysoserious.ggff.net*",
+            "https://*.ggff.net*",
             "https://*.vercel.app"
         )); 
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedHeaders(Arrays.asList("*")); // 允许所有请求头，防止缺失自定义头导致 CORS 失败
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

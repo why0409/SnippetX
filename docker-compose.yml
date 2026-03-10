@@ -10,13 +10,13 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=prod
       - DB_HOST=mysql
-      - DB_PASS=123456 # 请在生产环境修改
+      - DB_PASS=${DB_ROOT_PASSWORD}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - REDIS_PASS=snippetx123
-      - MAIL_USER=admin@yourdomain.com
-      - MAIL_PASS=your_mail_pass
-      - SNIPPETX_JWT_SECRET=your_long_random_secret_string
+      - REDIS_PASS=${REDIS_PASSWORD}
+      - MAIL_USER=${MAIL_USER}
+      - MAIL_PASS=${MAIL_PASS}
+      - SNIPPETX_JWT_SECRET=${JWT_SECRET}
     depends_on:
       - mysql
       - redis
@@ -30,8 +30,8 @@ services:
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_DATABASE=snippetx
-      - MYSQL_ROOT_PASSWORD=123456
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
       - ./snippetx-backend/db/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -42,18 +42,18 @@ services:
   redis:
     image: redis:latest
     container_name: snippetx-redis
-    command: redis-server --requirepass snippetx123
+    command: redis-server --requirepass ${REDIS_PASSWORD}
     ports:
       - "6379:6379"
     networks:
       - snippetx-net
 
-  # Nginx 反向代理 (HTTPS 8443)
+  # Nginx 反向代理 (HTTPS)
   nginx:
     image: nginx:alpine
     container_name: snippetx-nginx
     ports:
-      - "8443:8443"
+      - "${NGINX_HTTPS_PORT}:${NGINX_HTTPS_PORT}"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/certs:/etc/nginx/certs:ro
