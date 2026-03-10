@@ -12,6 +12,8 @@ services:
       - DB_HOST=mysql
       - DB_PASS=123456 # 请在生产环境修改
       - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASS=snippetx123
       - MAIL_USER=admin@yourdomain.com
       - MAIL_PASS=your_mail_pass
       - SNIPPETX_JWT_SECRET=your_long_random_secret_string
@@ -40,6 +42,7 @@ services:
   redis:
     image: redis:latest
     container_name: snippetx-redis
+    command: redis-server --requirepass snippetx123
     ports:
       - "6379:6379"
     networks:
