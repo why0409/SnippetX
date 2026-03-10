@@ -80,6 +80,15 @@ export default function SnippetX() {
     return () => clearTimeout(timer);
   }, [searchText]);
 
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem("auth_token");
+    setIsLoggedIn(false); 
+    setUser(null); 
+    setSelectedSnippet(null); 
+    setIsMobileDetailView(false); 
+    setActiveTab('community');
+  }, []);
+
   const fetchSnippets = useCallback(async (category?: string | null, keyword?: string) => {
     setIsLoading(true);
     try {
@@ -102,11 +111,15 @@ export default function SnippetX() {
       if (data.length > 0 && !selectedSnippet && typeof window !== 'undefined' && window.innerWidth >= 768) {
         setSelectedSnippet(data[0]);
       }
-    } catch (err) { 
+    } catch (err: any) { 
       console.error(err); 
+      if (err.response?.status === 403) {
+        handleLogout();
+        setIsLoginModalOpen(true);
+      }
       if (activeTab === 'my') setAllSnippets([]); 
     } finally { setIsLoading(false); }
-  }, [activeTab, selectedSnippet]);
+  }, [activeTab, selectedSnippet, handleLogout]);
 
   useEffect(() => { 
     fetchSnippets(selectedCategory, debouncedSearch); 
@@ -134,12 +147,11 @@ export default function SnippetX() {
       setUser(res.data.data);
       const catRes = await api.get("/snippet/categories");
       setCategories(catRes.data.data);
-    } catch (err) {}
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("auth_token");
-    setIsLoggedIn(false); setUser(null); setSelectedSnippet(null); setIsMobileDetailView(false); setActiveTab('community');
+    } catch (err: any) {
+      if (err.response?.status === 403) {
+        handleLogout();
+      }
+    }
   };
 
   const getHighlighterStyle = () => {
