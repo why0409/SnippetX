@@ -88,7 +88,10 @@ export default function CreateSnippetModal({ isOpen, onClose, onSuccess, editDat
     setError("");
 
     try {
-      const res = await axios.post("/api/ai/process", { code: originalContent });
+      const res = await axios.post("/api/ai/process", 
+        { code: originalContent },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       const { language, description } = res.data;
       
       setFormData(prev => ({

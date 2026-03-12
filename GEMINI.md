@@ -25,6 +25,7 @@
 - **UI 风格:** 年轻化、深色模式、毛玻璃效果 (Backdrop Blur)、渐变色设计。
 - **组件库:** Lucide React (图标), Framer Motion (动画), React Syntax Highlighter (代码高亮)。
 - **状态管理:** 优先使用 `useState` 与 `useEffect` 配合 `localStorage` 处理认证。
+- **API 调用:** 调用后端工程时使用 `lib/api.ts` 封装好的 `api` 实例；调用 Next.js 本地 API 路由 (如 AI 功能) 时，若需鉴权则必须通过 `localStorage.getItem("auth_token")` 手动注入 `Authorization: Bearer <token>` 请求头。
 
 ## 4. 数据库规范 (Database)
 - **环境:** MySQL 8.0

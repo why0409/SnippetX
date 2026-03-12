@@ -172,7 +172,11 @@ export default function SnippetX() {
     setIsInsightLoading(true);
     setAiInsight(null);
     try {
-      const res = await axios.post("/api/ai/process", { code: selectedSnippet.content, action: "insight" });
+      const token = localStorage.getItem("auth_token");
+      const res = await axios.post("/api/ai/process", 
+        { code: selectedSnippet.content, action: "insight" },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       setAiInsight(res.data);
     } catch (err) { alert("AI 分析失败"); }
     finally { setIsInsightLoading(false); }
