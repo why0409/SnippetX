@@ -23,6 +23,29 @@ services:
     networks:
       - snippetx-net
 
+  # 前端服务
+  snippetx-web:
+    build: 
+      context: ./snippetx-web
+      args:
+        - NEXT_PUBLIC_API_URL=https://ysoserious.ggff.net:8443
+    container_name: snippetx-web
+    ports:
+      - "3000:3000"
+    environment:
+      # 前端发起请求的后端公网地址
+      - NEXT_PUBLIC_API_URL=https://ysoserious.ggff.net:8443
+      # 内部直连带密码的 Redis 容器
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      - AI_API_KEY=${AI_API_KEY}
+      - AI_BASE_URL=${AI_BASE_URL}
+      - AI_MODEL=${AI_MODEL}
+    depends_on:
+      - snippetx-api
+      - redis
+    networks:
+      - snippetx-net
+
   # 数据库
   mysql:
     image: mysql:8.0
@@ -53,6 +76,7 @@ services:
     image: nginx:alpine
     container_name: snippetx-nginx
     ports:
+      - "2053:2053"
       - "${NGINX_HTTPS_PORT}:${NGINX_HTTPS_PORT}"
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
